@@ -1,6 +1,7 @@
 package com.idrawing.filemanager.domain;
 
 import lombok.Getter;
+import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +26,9 @@ public class LocalFile {
         if (!Files.isRegularFile(path))
             throw new IllegalArgumentException("Argument is not a path");
         this.path = path;
+        try {
+            this.attributes = Files.readAttributes(path, BasicFileAttributes.class);
+        } catch (IOException ignored) {}
     }
 
     public String getName() {
@@ -39,50 +43,75 @@ public class LocalFile {
         return path.toAbsolutePath().toString();
     }
 
-    public LocalDateTime getCreationDate() throws IOException {
+    public LocalDateTime getCreationDate(){
         if (attributes != null) {
             return LocalDateTime.ofInstant(attributes.creationTime().toInstant(), ZoneId.systemDefault());
         } else {
-            this.attributes = Files.readAttributes(path, BasicFileAttributes.class);
+            try {
+                this.attributes = Files.readAttributes(path, BasicFileAttributes.class);
+            } catch (IOException e) {
+                return LocalDateTime.now();
+            }
             Instant instant = attributes.creationTime().toInstant();
             return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         }
     }
 
-    public LocalDateTime getLastModifiedDate() throws IOException {
+    public LocalDateTime getLastModifiedDate() {
         if (attributes != null) {
             return LocalDateTime.ofInstant(attributes.lastModifiedTime().toInstant(), ZoneId.systemDefault());
         } else {
-            this.attributes = Files.readAttributes(path, BasicFileAttributes.class);
+            try {
+                this.attributes = Files.readAttributes(path, BasicFileAttributes.class);
+            } catch (IOException e) {
+                return LocalDateTime.now();
+            }
             Instant instant = attributes.lastModifiedTime().toInstant();
             return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         }
     }
 
-    public LocalDateTime getLastAccessDate() throws IOException {
+    public LocalDateTime getLastAccessDate() {
         if (attributes != null) {
             return LocalDateTime.ofInstant(attributes.lastAccessTime().toInstant(), ZoneId.systemDefault());
         } else {
-            this.attributes = Files.readAttributes(path, BasicFileAttributes.class);
+            try {
+                this.attributes = Files.readAttributes(path, BasicFileAttributes.class);
+            } catch (IOException e) {
+                return LocalDateTime.now();
+            }
             Instant instant = attributes.lastAccessTime().toInstant();
             return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         }
     }
 
-    public String getCreator() throws IOException {
-        return Files.getOwner(path).getName();
+    public String getOwner() {
+        try {
+            return Files.getOwner(path).getName();
+        } catch (IOException e) {
+            return "";
+        }
     }
 
-    public String getContentType() throws IOException {
-        return Files.probeContentType(path);
+    public String getContentType() {
+        try {
+            return Files.probeContentType(path);
+        } catch (IOException e) {
+            return "";
+        }
     }
 
-    public long getFileSizeBytes() throws IOException {
-        return Files.size(path);
+    public long getFileSizeBytes() {
+        try {
+            return Files.size(path);
+        } catch (IOException e) {
+            return 0L;
+        }
     }
 
     @Override
     public String toString() {
         return getPathString();
     }
+
 }
