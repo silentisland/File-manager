@@ -3,6 +3,7 @@ package com.idrawing.filemanager.domain;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,11 +33,11 @@ public class LocalFile {
     }
 
     public String getName() {
-        return getNameWithoutExtension(path.toAbsolutePath().toString());
+        return getNameWithoutExtension(path.toAbsolutePath().toString().toLowerCase());
     }
 
     public String getExtension() {
-        return getFileExtension(path.toAbsolutePath().toString());
+        return getFileExtension(path.toAbsolutePath().toString().toLowerCase());
     }
 
     public String getPathString() {
@@ -107,6 +108,10 @@ public class LocalFile {
         } catch (IOException e) {
             return 0L;
         }
+    }
+
+    public File getFile(){
+        return path.toFile();
     }
 
     @Override

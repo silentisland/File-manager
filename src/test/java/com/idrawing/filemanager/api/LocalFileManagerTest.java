@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.function.Consumer;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -188,49 +188,49 @@ public class LocalFileManagerTest {
     @Test
     public void shouldFindAllFilesByExtensionOnselectDisc() throws Exception {
         //when
-        Iterable<LocalFile> result = fileManager.findFilesByExtension(Paths.get("src/test/java/fixture/searchtest/"), "test");
+        Collection<LocalFile> result = fileManager.findFilesByExtension(Paths.get("src/test/java/fixture/searchtest/"), "test");
 
         //then
-        assertTrue(Iterables.size(result) == 1);
+        assertTrue(result.size() == 1);
     }
 
     @Test
     public void shouldFindAllFilesByMenyExtensionsOnselectDisc() throws Exception {
         //when
-        Iterable<LocalFile> result = fileManager.findFilesByExtension(Paths.get("src/test/java/fixture/searchtest/"), "test", "tester", "testix");
+        Collection<LocalFile> result = fileManager.findFilesByExtension(Paths.get("src/test/java/fixture/searchtest/"), "test", "tester", "testix");
 
         //then
-        assertTrue(Iterables.size(result) == 3);
+        assertTrue(result.size() == 3);
     }
 
     @Test
     public void shouldGetAllFilesByExtension() throws Exception {
         //when
-        Iterable<LocalFile> result = fileManager.findAllFilesByExtension("test");
+        Collection<LocalFile> result = fileManager.findAllFilesByExtension("test");
 
         //then
-        assertTrue(Iterables.size(result) == 1);
+        assertTrue(result.size() == 1);
     }
 
     @Test
     public void shouldGetAllFilesByManyExtension() throws Exception {
         //when
-        Iterable<LocalFile> result = fileManager.findAllFilesByExtension("test", "tester", "testix");
+        Collection<LocalFile> result = fileManager.findAllFilesByExtension("test", "tester", "testix");
 
         //then
-        assertTrue(Iterables.size(result) == 3);
+        assertTrue(result.size() == 3);
     }
 
     @Test
     public void shouldFindFilesByExtensionInPathSet() throws Exception {
         //given
-        Iterable<LocalFile> result1 = fileManager.findAllFilesByExtension("test");
+        Collection<LocalFile> result1 = fileManager.findAllFilesByExtension("test");
 
         //when
-        Iterable<LocalFile> result2 = fileManager.findFilesByExtensionPathSet(fileManager.getDiscsList(), "test");
+        Collection<LocalFile> result2 = fileManager.findFilesByExtensionPathSet(fileManager.getDiscsList(), "test");
 
         //then
-        assertEquals(Iterables.size(result1), Iterables.size(result2));
+        assertEquals(result1.size(), result2.size());
     }
 
     @Test

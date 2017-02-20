@@ -1,30 +1,21 @@
 package com.idrawing.filemanager.api;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.idrawing.filemanager.domain.LocalFile;
 import com.idrawing.filemanager.model.visitors.CleanDirVisitor;
 import com.idrawing.filemanager.model.visitors.CopyDirVisitor;
 import com.idrawing.filemanager.model.visitors.DeleteVisitor;
 import com.idrawing.filemanager.model.visitors.SearchVisitor;
-import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by Sergej Povzanyuk on 07.08.2016.
