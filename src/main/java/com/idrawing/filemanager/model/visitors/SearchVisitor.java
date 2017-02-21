@@ -19,7 +19,6 @@ import static com.google.common.io.Files.getFileExtension;
 /**
  * Created by Admin on 19.02.2017.
  */
-
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class SearchVisitor implements FileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if(isEqualExtension(file)){
+        if (isEqualExtension(file)) {
             files.add(new LocalFile(file));
         }
         return FileVisitResult.CONTINUE;
@@ -43,7 +42,7 @@ public class SearchVisitor implements FileVisitor<Path> {
 
     private boolean isEqualExtension(Path file) {
         String fileExtension = getFileExtension(file.toAbsolutePath().toString()).toLowerCase();
-        return Stream.of(extension).anyMatch((Predicate<String>) ext -> ext.toLowerCase().equals(fileExtension));
+        return Stream.of(extension).anyMatch(ext -> ext.toLowerCase().equals(fileExtension));
     }
 
     @Override
