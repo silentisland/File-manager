@@ -1,17 +1,17 @@
 package com.idrawing.filemanager.api;
 
 
+import com.google.common.collect.Iterables;
 import com.idrawing.filemanager.domain.LocalFile;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -165,7 +165,6 @@ public class LocalFileManagerTest {
         fileManager.cleanDirectory(to);
     }
 
-
     @Test
     public void shouldCleanDirectory() throws Exception {
         //given
@@ -189,29 +188,46 @@ public class LocalFileManagerTest {
     @Test
     public void shouldFindAllFilesByExtensionOnselectDisc() throws Exception {
         //when
-        List<LocalFile> result = fileManager.findFilesByExtension(Paths.get("D:/"), "cdw");
+        Collection<LocalFile> result = fileManager.findFilesByExtension(Paths.get("src/test/java/fixture/searchtest/"), "test");
 
         //then
-        assertTrue(result.size() > 0);
+        assertTrue(result.size() == 1);
+    }
+
+    @Test
+    public void shouldFindAllFilesByMenyExtensionsOnselectDisc() throws Exception {
+        //when
+        Collection<LocalFile> result = fileManager.findFilesByExtension(Paths.get("src/test/java/fixture/searchtest/"), "test", "tester", "testix");
+
+        //then
+        assertTrue(result.size() == 3);
     }
 
     @Test
     public void shouldGetAllFilesByExtension() throws Exception {
         //when
-        List<LocalFile> result = fileManager.findAllFilesByExtension("txt");
+        Collection<LocalFile> result = fileManager.findAllFilesByExtension("test");
 
         //then
-        assertTrue(result.size() > 0);
+        assertTrue(result.size() == 1);
+    }
+
+    @Test
+    public void shouldGetAllFilesByManyExtension() throws Exception {
+        //when
+        Collection<LocalFile> result = fileManager.findAllFilesByExtension("test", "tester", "testix");
+
+        //then
+        assertTrue(result.size() == 3);
     }
 
     @Test
     public void shouldFindFilesByExtensionInPathSet() throws Exception {
         //given
-        Set<Path> pathSet = new HashSet<>(Arrays.asList(Paths.get("C:/"), Paths.get("D:/")));
-        List<LocalFile> result1 = fileManager.findAllFilesByExtension("cdw");
+        Collection<LocalFile> result1 = fileManager.findAllFilesByExtension("test");
 
         //when
-        List<LocalFile> result2 = fileManager.findFilesByExtensionPathSet(pathSet, "cdw");
+        Collection<LocalFile> result2 = fileManager.findFilesByExtensionPathSet(fileManager.getDiscsList(), "test");
 
         //then
         assertEquals(result1.size(), result2.size());
@@ -258,5 +274,31 @@ public class LocalFileManagerTest {
 
         //cleaning
         fileManager.deleteDirectory(target);
+    }
+
+    @Test
+    public void shouldFindFilesBetweenTwoDates() throws Exception {
+        //given
+        LocalDateTime from = LocalDateTime.of(2016, 6, 30, 12, 0);
+        LocalDateTime to = LocalDateTime.now();
+
+        //when
+        Iterable<LocalFile> result = fileManager.findAllFilesBetweenTwoDates(from, to, "testix");
+
+        //then
+        assertTrue(Iterables.size(result) == 1);
+    }
+
+    @Test
+    public void shouldCompareTwoFilesContent() throws IOException {
+        //given
+        Path file1 = Paths.get("src\\test\\java\\fixture\\comparetest\\drawing1.cdw");
+        Path file2 = Paths.get("src\\test\\java\\fixture\\comparetest\\drawing2.cdw");
+
+        //when
+        boolean isSameFile = fileManager.isSameFile(file1, file2);
+
+        //then
+        assertTrue(isSameFile);
     }
 }
