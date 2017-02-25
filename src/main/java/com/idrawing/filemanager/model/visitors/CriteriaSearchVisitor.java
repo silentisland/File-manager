@@ -2,10 +2,7 @@ package com.idrawing.filemanager.model.visitors;
 
 import com.idrawing.filemanager.domain.FileCriteria;
 import com.idrawing.filemanager.domain.LocalFile;
-import com.idrawing.filemanager.model.matchers.EndMatcher;
-import com.idrawing.filemanager.model.matchers.ExtensionMatcher;
-import com.idrawing.filemanager.model.matchers.MatchChain;
-import com.idrawing.filemanager.model.matchers.NameMatcher;
+import com.idrawing.filemanager.model.matchers.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,7 +19,6 @@ import java.util.Collection;
 @Getter
 @AllArgsConstructor
 public class CriteriaSearchVisitor extends SimpleFileVisitor<Path>{
-
     private FileCriteria criteria;
     private Collection<LocalFile> searchResult;
 
@@ -34,13 +30,19 @@ public class CriteriaSearchVisitor extends SimpleFileVisitor<Path>{
     }
 
     private boolean isMatchCriteria(Path file, BasicFileAttributes attributes) {
-        MatchChain filter = new ExtensionMatcher(new NameMatcher(new EndMatcher(), criteria), criteria);
+        MatchChain creationDateMatcher = new CreationDateMatcher(new EndMatcher(), criteria);
+        MatchChain lastAccessDateMatcher = new LastAccessDateMatcher(creationDateMatcher, criteria);
+        MatchChain lastModifiedDateMatcher = new LastModifiedDateMatcher(lastAccessDateMatcher, criteria);
+        MatchChain fileSizeMatcher = new FileSizeMatcher(lastModifiedDateMatcher, criteria);
+        MatchChain nameMatcher = new NameMatcher(fileSizeMatcher, criteria);
+        MatchChain extensionMatcher = new ExtensionMatcher(nameMatcher, criteria);
+        MatchChain pathRegExpMatcher = new PathRegExpMatcher(extensionMatcher, criteria);
+        MatchChain filter = new ExtensionMatcher(pathRegExpMatcher, criteria);
         return filter.match(file, attributes);
     }
 
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-        //TODO add logging
         return FileVisitResult.CONTINUE;
     }
 }

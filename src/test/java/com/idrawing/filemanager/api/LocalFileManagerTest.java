@@ -2,15 +2,19 @@ package com.idrawing.filemanager.api;
 
 
 import com.google.common.collect.Iterables;
+import com.idrawing.filemanager.domain.FileCriteria;
 import com.idrawing.filemanager.domain.LocalFile;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.*;
@@ -111,7 +115,7 @@ public class LocalFileManagerTest {
         assertTrue(Files.exists(filepath2));
 
         //when
-        Path path = fileManager.deleteDirectory(result);
+        fileManager.deleteDirectory(result);
 
         //then
         assertFalse(Files.exists(directory));
@@ -179,9 +183,9 @@ public class LocalFileManagerTest {
         assertTrue(Files.exists(file2));
 
         //when
-        Path result = fileManager.cleanDirectory(dirtyDirectory);
+        fileManager.cleanDirectory(dirtyDirectory);
 
-        //thne
+        //then
         assertFalse(Files.exists(newDirectory));
     }
 
@@ -300,5 +304,19 @@ public class LocalFileManagerTest {
 
         //then
         assertTrue(isSameFile);
+    }
+
+    @Test
+    public void shouldSearchFilesByCriteria() throws IOException {
+        //given
+        FileCriteria criteria = new FileCriteria();
+        criteria.setRegExp("\\.*cdw");
+
+        //when
+        Collection<LocalFile> result = fileManager.findByCriteria(criteria);
+
+        System.out.println(result.size());
+
+
     }
 }

@@ -109,13 +109,15 @@ public class LocalFileManager implements FileManager {
     public Collection<LocalFile> findByCriteria(FileCriteria criteria) throws IOException {
         Collection<LocalFile> result = new ArrayList<>();
         CriteriaSearchVisitor csv = new CriteriaSearchVisitor(criteria, result);
-        criteria.getPaths().parallelStream().forEach(path -> {
-            try {
+        if (criteria.getPaths() == null) {
+            for (Path path : getDiscsList()) {
                 Files.walkFileTree(path, csv);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        });
+        } else {
+            for (Path path : criteria.getPaths()) {
+                Files.walkFileTree(path, csv);
+            }
+        }
         return result;
     }
 }

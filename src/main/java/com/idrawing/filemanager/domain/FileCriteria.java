@@ -18,14 +18,9 @@ import java.util.Collection;
 @NoArgsConstructor
 public class FileCriteria {
     private Collection<Path> paths;
-
     private String fileName, partOfPath, extension, regExp;
-
-    private long fileSizeMin, fileSizeMax;
-
+    private Long fileSizeMin, fileSizeMax;
     private LocalDateTime creationDateFrom, creationDateTo;
-
-    private LocalDateTime lastModifiedDateFrom, lastModifiedTo;
-
+    private LocalDateTime lastModifiedDateFrom, lastModifiedDateTo;
     private LocalDateTime lastAccessDateFrom, lastAccessDateTo;
 }

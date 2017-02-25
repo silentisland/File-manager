@@ -5,6 +5,7 @@ import org.apache.commons.validator.routines.LongValidator;
 
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 /**
@@ -17,9 +18,14 @@ public class CreationDateMatcher extends MatchChain {
 
     @Override
     public boolean match(Path file, BasicFileAttributes attrs) {
-        long from = criteria.getCreationDateFrom().toInstant(ZoneOffset.UTC).toEpochMilli();
-        long to = criteria.getCreationDateTo().toInstant(ZoneOffset.UTC).toEpochMilli();
-        return isMatch(attrs, from, to) && nextMatcher.match(file, attrs);
+        return isMatch(attrs,
+                defaultIfNull(criteria.getCreationDateFrom(), Long.MIN_VALUE),
+                defaultIfNull(criteria.getCreationDateTo(), Long.MAX_VALUE))
+                && nextMatcher.match(file, attrs);
+    }
+
+    private long defaultIfNull(LocalDateTime date, Long dateMilliseconds) {
+        return date == null ? dateMilliseconds : date.toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     private boolean isMatch(BasicFileAttributes attrs, long from, long to) {
