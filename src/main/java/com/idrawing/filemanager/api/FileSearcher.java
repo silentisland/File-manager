@@ -1,5 +1,6 @@
 package com.idrawing.filemanager.api;
 
+import com.idrawing.filemanager.domain.FileCriteria;
 import com.idrawing.filemanager.domain.LocalFile;
 
 import java.io.IOException;
@@ -20,4 +21,6 @@ public interface FileSearcher {
     Collection<LocalFile> findFilesByExtensionPathSet(Iterable<Path> paths, String ... extension) throws IOException;
 
     Collection<LocalFile> findAllFilesBetweenTwoDates(LocalDateTime from, LocalDateTime to, String ... extension) throws IOException;
+
+    Collection<LocalFile> findByCriteria(FileCriteria fileCriteria) throws IOException;
 }

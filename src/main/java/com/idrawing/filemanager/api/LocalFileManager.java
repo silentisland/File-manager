@@ -1,10 +1,8 @@
 package com.idrawing.filemanager.api;
 
+import com.idrawing.filemanager.domain.FileCriteria;
 import com.idrawing.filemanager.domain.LocalFile;
-import com.idrawing.filemanager.model.visitors.CleanDirVisitor;
-import com.idrawing.filemanager.model.visitors.CopyDirVisitor;
-import com.idrawing.filemanager.model.visitors.DeleteVisitor;
-import com.idrawing.filemanager.model.visitors.SearchVisitor;
+import com.idrawing.filemanager.model.visitors.*;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -105,5 +103,19 @@ public class LocalFileManager implements FileManager {
                 .parallelStream()
                 .filter(localFile -> localFile.getCreationDate().isAfter(from) && localFile.getCreationDate().isBefore(to))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<LocalFile> findByCriteria(FileCriteria criteria) throws IOException {
+        Collection<LocalFile> result = new ArrayList<>();
+        CriteriaSearchVisitor csv = new CriteriaSearchVisitor(criteria, result);
+        criteria.getPaths().parallelStream().forEach(path -> {
+            try {
+                Files.walkFileTree(path, csv);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return result;
     }
 }

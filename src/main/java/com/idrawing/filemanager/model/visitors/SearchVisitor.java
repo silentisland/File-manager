@@ -41,8 +41,8 @@ public class SearchVisitor implements FileVisitor<Path> {
     }
 
     private boolean isEqualExtension(Path file) {
-        String fileExtension = getFileExtension(file.toAbsolutePath().toString()).toLowerCase();
-        return Stream.of(extension).anyMatch(ext -> ext.toLowerCase().equals(fileExtension));
+        String fileExtension = getFileExtension(file.toAbsolutePath().toString());
+        return Stream.of(extension).anyMatch(ext -> ext.equalsIgnoreCase(fileExtension));
     }
 
     @Override
